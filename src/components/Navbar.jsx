@@ -1,68 +1,40 @@
-import { useState } from "react";
-import workoutPlan from "./data.js";
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
-  const [openDropdown, setOpenDropdown] = useState(null);
-  const [selectedExercise, setSelectedExercise] = useState(null);
+    return (
+        <nav className="flex justify-between items-center p-4 bg-gray-500 text-white">
+            <h1 className="text-xl font-bold cursor-pointer hover:bg-slate-100 hover:text-black px-2 p-1 rounded-md transition-colors duration-300 ease-in">
+                <Link to="/">Human Growth centre</Link>
+            </h1>
 
-  const toggleDropdown = (menu) => {
-    setOpenDropdown(openDropdown === menu ? null : menu);
-  };
+            <div className='flex space-x-10'>
+                <ul className="flex justify-center items-center space-x-4">
+                    <li className='cursor-pointer transition-colors duration-300 ease-in hover:bg-gray-100 px-2 p-1 rounded-md hover:text-black'>
+                        <Link to="/">Home</Link>
+                    </li>
+                    <li className='cursor-pointer transition-colors duration-300 ease-in hover:bg-gray-100 px-2 p-1 rounded-md hover:text-black'>
+                        <Link to="/exercise">Excercise</Link>
+                    </li>
+                    <li className='cursor-pointer transition-colors duration-300 ease-in hover:bg-gray-100 px-2 p-1 rounded-md hover:text-black'>
+                        <Link to="/yoga">Yoga</Link>
+                    </li>
+                </ul>
 
-  return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
-      {/* Stylish Logo */}
-      <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-6">
-        Workout
-      </h1>
+                <div>
+                    {/* Show Sign-In Button if Not Signed In */}
+                    <SignedOut>
+                        <SignInButton className="text-white bg-green-500 px-2 p-1 rounded-md cursor-pointer" />
+                    </SignedOut>
 
-      <div className="flex w-full max-w-5xl">
-        {/* Left Sidebar (Workout Menu) */}
-        <nav className="w-1/3 border-2 bg-gray-900 text-white p-4 rounded-lg shadow-lg">
-          <ul className="space-y-2">
-            {workoutPlan.map((workout, index) => (
-              <li key={index}>
-                <button
-                  className="w-full text-left p-2 bg-blue-600 hover:bg-blue-700 transition duration-300 rounded-lg"
-                  onClick={() => toggleDropdown(workout.title)}
-                >
-                  {workout.day} - {workout.title}
-                </button>
-                {openDropdown === workout.title && (
-                  <ul className="bg-blue-500 p-2 mt-1 rounded-lg shadow-md">
-                    {workout.exercises.map((exercise, i) => (
-                      <li
-                        key={i}
-                        className="p-1 cursor-pointer hover:bg-blue-400 transition duration-200 rounded-md"
-                        onClick={() => setSelectedExercise(exercise)}
-                      >
-                        {exercise.title}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
+                    {/* Show User Profile Button if Signed In */}
+                    <SignedIn>
+                        <UserButton afterSignOutUrl="/" className="cursor-pointer" />
+                    </SignedIn>
+                </div>
+            </div>
         </nav>
-
-        {/* Right Section (Display Selected Exercise Video and Duration) */}
-        <div className="flex flex-col justify-center items-center w-2/3 bg-gray-300 border-2 p-4 rounded-lg shadow-lg">
-          {selectedExercise && (
-            <iframe
-              src={selectedExercise.videoUrl}
-              className="w-[80%] h-[90%] mb-4 rounded-lg border-4 border-blue-500 shadow-md"
-              allowFullScreen
-            ></iframe>
-          )}
-
-          <h1 className="text-2xl font-bold text-gray-800">
-            {selectedExercise ? `Duration: ${selectedExercise.duration}` : "Select an Exercise"}
-          </h1>
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Navbar;
